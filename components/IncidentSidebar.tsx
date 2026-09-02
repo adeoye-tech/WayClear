@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
 import { db } from "@/lib/firebase";
 import {
   doc,
@@ -15,6 +16,7 @@ type Incident = {
   confidence: string;
   confirmations: number;
   disputes?: number;
+  activeUpdates?: number;
   urgency?: string;
   createdAt: any;
 };
@@ -82,10 +84,37 @@ function getUrgencyStyle(urgency: string) {
 export default function IncidentSidebar({
   incidents,
 }: IncidentSidebarProps) {
-  async function confirmReport(
+  const [message, setMessage] =
+  useState("");
+  const [processing, setProcessing] =
+  useState<string | null>(null);
+ async function confirmReport(
   id: string,
   currentConfirmations: number
 ) {
+  if (processing === id) return;
+
+setProcessing(id);
+  
+  const alreadyConfirmed =
+    localStorage.getItem(
+      `confirm-${id}`
+    );
+
+  if (alreadyConfirmed) {
+  setMessage(
+    "✓ You already confirmed this report"
+  );
+
+  setTimeout(() => {
+    setMessage("");
+  }, 3000);
+
+  setProcessing(null);
+
+  return;
+}
+
   const newConfirmations =
     currentConfirmations + 1;
 
@@ -93,7 +122,9 @@ export default function IncidentSidebar({
 
   if (newConfirmations >= 10) {
     confidence = "High";
-  } else if (newConfirmations >= 5) {
+  } else if (
+    newConfirmations >= 5
+  ) {
     confidence = "Medium";
   }
 
@@ -103,25 +134,97 @@ export default function IncidentSidebar({
     id
   );
 
-  await updateDoc(incidentRef, {
-    confirmations: newConfirmations,
-    confidence,
-  });
+ localStorage.setItem(
+  `confirm-${id}`,
+  "true"
+);
+
+await updateDoc(incidentRef, {
+  confirmations: increment(1),
+});
+
+setProcessing(null);
 }
 
 async function disputeReport(
   id: string,
   currentDisputes: number
 ) {
- const incidentRef = doc(
-  db,
-  "incidents",
-  id
+  const alreadyDisputed =
+    localStorage.getItem(
+      `dispute-${id}`
+    );
+
+  if (alreadyDisputed) {
+   setMessage(
+  "⚠ You already disputed this report"
 );
 
-await updateDoc(incidentRef, {
-  disputes: currentDisputes + 1,
-});
+setTimeout(() => {
+  setMessage("");
+}, 3000);
+    return;
+  }
+
+  const incidentRef = doc(
+    db,
+    "incidents",
+    id
+  );
+
+  await updateDoc(incidentRef, {
+    disputes: currentDisputes + 1,
+  });
+
+  localStorage.setItem(
+    `dispute-${id}`,
+    "true"
+  );
+}
+
+async function reportStillActive(
+  id: string
+) {
+  const lastUpdate =
+    localStorage.getItem(
+      `active-${id}`
+    );
+
+  if (lastUpdate) {
+    const diff =
+      Date.now() -
+      Number(lastUpdate);
+
+    if (diff < 10 * 60 * 1000) {
+      
+        
+      setMessage(
+  "⏱ Please wait 10 minutes before marking this report active again"
+);
+
+setTimeout(() => {
+  setMessage("");
+}, 3000);
+      return;
+    }
+  }
+
+  const incidentRef = doc(
+    db,
+    "incidents",
+    id
+  );
+
+  await updateDoc(incidentRef, {
+    activeUpdates: increment(1),
+  });
+
+  localStorage.setItem(
+    `active-${id}`,
+    Date.now().toString()
+  );
+
+  
 }
 return (
 
@@ -131,6 +234,11 @@ return (
   <h2 className="text-3xl font-bold text-white">
     🟢 Live Incident Feed
   </h2>
+  {message && (
+  <div className="mt-4 rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-3 text-sm text-cyan-300">
+    {message}
+  </div>
+)}
 
   <p className="mt-4 text-sm text-slate-400">
     Showing {incidents.length} active community reports
@@ -202,14 +310,20 @@ className={`text-lg font-semibold ${
 </div>
 
             
-             <div  className="mt-4 flex items-center justify-between rounded-xl border border-cyan-500/10 bg-slate-950/40 px-4 py-3">
-  <span  className="font-semibold text-cyan-300">
+            <div className="mt-4 flex flex-col gap-2 rounded-xl border border-cyan-500/10 bg-slate-950/40 px-4 py-3">
+
+  <span className="font-semibold text-cyan-300">
     👍 {incident.confirmations} confirmations
+  </span>
+
+  <span className="font-semibold text-yellow-300">
+    🔄 {incident.activeUpdates || 0} active updates
   </span>
 
   <span className="font-semibold text-red-300">
     👎 {incident.disputes || 0} disputes
   </span>
+
 </div>
            
             {incident.confidence === "High" && (
@@ -221,6 +335,7 @@ className={`text-lg font-semibold ${
 )}
 
             <button
+  disabled={processing === incident.id}
   onClick={(e) => {
     e.preventDefault();
     confirmReport(
@@ -231,6 +346,18 @@ className={`text-lg font-semibold ${
   className="mt-3 w-full rounded-xl bg-cyan-600 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-cyan-500"
 >
   Confirm Report
+</button>
+<button
+  onClick={(e) => {
+    e.preventDefault();
+
+    reportStillActive(
+      incident.id
+    );
+  }}
+  className="mt-2 w-full rounded-xl border border-yellow-500/40 bg-yellow-500/10 py-2 text-sm font-medium text-yellow-300 transition-all duration-300 hover:bg-yellow-500/20"
+>
+  🔄 Still Active
 </button>
 <button
   onClick={(e) => {

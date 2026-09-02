@@ -188,7 +188,7 @@ async function handleSubmit(
     lng: 3.947,
   };
 
-    await addDoc(
+    const docRef =await addDoc(
       collection(db, "incidents"),
       {
         title,
@@ -198,12 +198,17 @@ async function handleSubmit(
         confidence: "Low",
         confirmations: 1,
         disputes: 0,
+        activeUpdates: 0,
         latitude: coordinates.lat,
          longitude: coordinates.lng,
         location: `${area}, ${stateName}`,
        createdAt: new Date(),
       }
     );
+    localStorage.setItem(
+  `confirm-${docRef.id}`,
+  "true"
+);
 
     setSubmitted(true);
   } catch (error) {
@@ -217,7 +222,7 @@ async function handleSubmit(
  
 
     return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-950 to-blue-950">
+    <main className="min-h-screen bg-linear-to-b from-slate-900 via-slate-950 to-blue-950">
       <Navbar />
 
       <section className="mx-auto max-w-3xl px-6 py-12">

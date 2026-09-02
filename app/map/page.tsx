@@ -28,10 +28,16 @@ export default function MapPage() {
   const unsubscribe = onSnapshot(
     collection(db, "incidents"),
     (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const data = snapshot.docs
+  .map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }))
+  .sort(
+    (a: any, b: any) =>
+      b.createdAt?.toDate().getTime() -
+      a.createdAt?.toDate().getTime()
+  );
 
       setIncidents(data);
     }
