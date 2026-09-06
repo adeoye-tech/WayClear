@@ -27,10 +27,18 @@ export default function Navbar() {
 
           <a
             href="/report"
-           className="rounded-lg bg-gradient-to-r from-green-600 to-emerald-500 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
+           className="rounded-lg bg-linear-to-r from-green-600 to-emerald-500 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
             Report an Issue
           </a>
+          <a 
+          href="/incidents"
+             className="rounded-lg bg-linear-to-r from-green-600 to-emerald-500 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
+          >
+            
+
+        Reports
+</a>
         </div>
       </div>
     </nav>

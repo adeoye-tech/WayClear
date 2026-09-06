@@ -52,7 +52,7 @@ function getTimeAgo(createdAt: any) {
     hours / 24
   );
 
-  return `${days} day ago`;
+  return `${days} day${days > 1 ? "s" : ""} ago`;
 }
 function getConfidenceStyle(confidence: string) {
   switch (confidence) {
@@ -232,7 +232,7 @@ return (
   
   <div className="rounded-3xl border border-cyan-500/20 bg-[#081a3a] p-6 shadow-[0_0_25px_rgba(6,182,212,0.08)]">
   <h2 className="text-3xl font-bold text-white">
-    🟢 Live Incident Feed
+    Community Reports
   </h2>
   {message && (
   <div className="mt-4 rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-3 text-sm text-cyan-300">
@@ -240,13 +240,13 @@ return (
   </div>
 )}
 
-  <p className="mt-4 text-sm text-slate-400">
+  <p className="mt-6 text-sm text-slate-400">
     Showing {incidents.length} active community reports
   </p>
   
 
 
-      <div className="space-y-4">
+     <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {incidents.map((incident) => (
           
   <Link
@@ -270,12 +270,12 @@ className={`text-lg font-semibold ${
       : "text-cyan-600"
   }`}
 >
-  {incident.category === "Flood" && "🌊 "}
-  {incident.category === "Traffic" && "🚗 "}
-  {incident.category === "Waste" && "🗑️ "}
-  {incident.category === "Electricity" && "⚡ "}
-  {incident.category === "Road" && "🚧 "}
-  {incident.category === "Water" && "💧 "}
+  {incident.category === "Flood" && " "}
+  {incident.category === "Traffic" && " "}
+  {incident.category === "Waste" && " "}
+  {incident.category === "Electricity" && " "}
+  {incident.category === "Road" && " "}
+  {incident.category === "Water" && " "}
   {incident.title}
 </h3>
 
@@ -287,7 +287,7 @@ className={`text-lg font-semibold ${
               {incident.location}
             </p>
             <p className="mt-1 text-xs text-slate-500">
-  🕒 {getTimeAgo(incident.createdAt)}
+   {getTimeAgo(incident.createdAt)}
 </p>
             
 
@@ -313,7 +313,7 @@ className={`text-lg font-semibold ${
             <div className="mt-4 flex flex-col gap-2 rounded-xl border border-cyan-500/10 bg-slate-950/40 px-4 py-3">
 
   <span className="font-semibold text-cyan-300">
-    👍 {incident.confirmations} confirmations
+     {incident.confirmations} confirmations
   </span>
 
   <span className="font-semibold text-yellow-300">
@@ -321,7 +321,7 @@ className={`text-lg font-semibold ${
   </span>
 
   <span className="font-semibold text-red-300">
-    👎 {incident.disputes || 0} disputes
+     {incident.disputes || 0} disputes
   </span>
 
 </div>

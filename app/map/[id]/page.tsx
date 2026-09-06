@@ -1,16 +1,12 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
 import Image from "next/image";
-
-
-
-type Props = {
-  params: Promise<{
-    id: string;
-  }>;
-};
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 function  getUrgencyStyle(
   urgency: string | undefined
@@ -30,41 +26,27 @@ function  getUrgencyStyle(
 }
 }
 
-export default async function IncidentDetailsPage({
-  params,
-}: Props) {
- const { id } = await params;
 
-const docRef = doc(db, "incidents", id);
-const docSnap = await getDoc(docRef);
+ export default function IncidentDetailsPage() {
+  const { id } = useParams();
+  const [incident, setIncident] = useState<any>(null);
+  useEffect(() => {
+  async function fetchIncident() {
+    if (!id) return;
 
-if (!docSnap.exists()) {
-  return (
-    <main className="min-h-screen bg-slate-950">
-      <Navbar />
-      <div className="mx-auto max-w-4xl px-6 py-12">
-        <h1 className="text-3xl font-bold text-white">
-          Incident Not Found
-        </h1>
-      </div>
-    </main>
-  );
-}
+    const docRef = doc(db, "incidents", id as string);
+    const docSnap = await getDoc(docRef);
 
-const incident: any = {
-  id: docSnap.id,
-  ...docSnap.data(),
-};
+    if (docSnap.exists()) {
+      setIncident({
+        id: docSnap.id,
+        ...docSnap.data(),
+      });
+    }
+  }
 
-  const imageMap: Record<string, string> = {
-  Flood: "/images/flood.jpg",
-  Traffic: "/images/traffic.jpg",
-  Waste: "/images/waste.jpg",
-  Electricity: "/images/electricity.jpg",
-  Road: "/images/road.jpg",
-  Water: "/images/water.jpg",
-};
-
+  fetchIncident();
+}, [id]);
   if (!incident) {
     return (
      <main className="min-h-screen bg-slate-950">
@@ -99,8 +81,10 @@ const incident: any = {
             {incident.location}
           </p>
           <p className="mt-2 text-sm text-slate-400">
-  Last Updated: 20 minutes ago
+  Reported on{" "}
+  {incident.createdAt?.toDate().toLocaleString()}
 </p>
+          
           <p className="mt-2 text-sm text-slate-400">
   Report ID: NRM-{incident.id}
 </p>
@@ -133,32 +117,37 @@ const incident: any = {
   </span>
 )}
 </div>
-<span className="rounded-full bg-red-100 px-4 py-2 text-sm text-red-700">
-  High Impact Area
-</span>
-<div className="mt-8 rounded-2xl border border-green-500/20 bg-green-500/5 p-6">
-  <h2 className="font-semibold text-green-400">
-    Community Advice
-  </h2>
 
-  <p className="mt-2 text-green-300">
-    Residents are advised to use alternative routes
-    and monitor local conditions before travelling.
-  </p>
-</div>
+
           </div>
-          <div className="mt-8 overflow-hidden rounded-2xl">
-  <Image
-    src={
-      imageMap[incident.category] ||
-      "/images/flood.jpg"
-    }
-    alt={incident.title}
-    width={1200}
-    height={600}
-    className="h-96 w-full object-cover"
+          <div className="mt-8 overflow-hidden rounded-2xl border border-cyan-500/20">
+  <iframe
+    src={`https://maps.google.com/maps?q=${incident.latitude},${incident.longitude}&z=15&output=embed`}
+    width="100%"
+    height="400"
+    loading="lazy"
+    className="border-0"
   />
 </div>
+{incident.imageUrl && (
+  <div className="mt-8">
+    <h2 className="mb-4 text-xl font-semibold text-white">
+      Photo Evidence
+    </h2>
+
+    <div className="overflow-hidden rounded-2xl border border-cyan-500/20">
+      <Image
+        src={incident.imageUrl}
+        alt="Incident Evidence"
+        width={1200}
+        height={700}
+        className="w-full object-cover"
+      />
+    </div>
+  </div>
+)}
+
+
 
           <p className="mt-8 text-lg leading-8 text-slate-300">
             {incident.description}
@@ -169,22 +158,21 @@ const incident: any = {
               Community Verification
             </h2>
 
-            <p className="mt-2 text-slate-300">
-              {incident.confirmations} users have confirmed
-              this report.
-            </p>
-          </div>
-          <div className="mt-8 rounded-2xl border border-cyan-500/20 bg-slate-950/50 p-6">
-  <h2 className="font-semibold text-white">
-    Community Impact
-  </h2>
+           <div className="mt-3 space-y-2 text-slate-300">
+  <p>
+     {incident.confirmations} confirmations
+  </p>
 
-  <ul className="mt-3 space-y-2 text-slate-300">
-    <li>• Traffic delays reported in the area</li>
-    <li>• Residents advised to take alternative routes</li>
-    <li>• Local businesses may be affected</li>
-  </ul>
+  <p>
+   {incident.activeUpdates || 0} active updates
+  </p>
+
+  <p>
+   {incident.disputes || 0} disputes
+  </p>
 </div>
+          </div>
+         
         </div>
       </section>
     </main>

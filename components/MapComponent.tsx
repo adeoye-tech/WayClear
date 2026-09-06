@@ -64,7 +64,8 @@ export default function MapComponent({
     <MapContainer
       center={[7.3775, 3.947]}
       zoom={12}
-      className="h-[700px] w-full rounded-2xl shadow-sm"
+      preferCanvas={true}
+      className="h-175 w-full rounded-2xl shadow-sm"
     >
       <FitBounds incidents={incidents} />
       <TileLayer

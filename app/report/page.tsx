@@ -1,143 +1,13 @@
 "use client";
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
+import {
+  getDocs,
+  collection,
+  addDoc,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { addDoc, collection } from "firebase/firestore";
 import Navbar from "@/components/Navbar";
-
-
-const locations = {
-  Oyo: [
-    "Mokola",
-    "Dugbe",
-    "Bodija",
-    "Challenge",
-    "Ring Road",
-    "Ojoo",
-    "Agodi Gate",
-    "Iwo Road",
-    "Eleyele",
-    "University of Ibadan",
-  ],
-
-  Lagos: [
-    "Ikeja",
-    "Alausa",
-    "Ojota",
-    "Maryland",
-    "Yaba",
-    "Surulere",
-    "Lekki Phase 1",
-    "Victoria Island",
-    "Ikorodu",
-    "Oshodi",
-  ],
-
-  Ogun: [
-    "Panseke",
-    "Kuto",
-    "Ibara",
-    "Lafenwa",
-    "Camp",
-    "Adatan",
-    "Oke-Ilewo",
-    "Asero",
-    "Ita Eko",
-    "Olomore",
-  ],
-
-  Osun: [
-    "Oja Oba",
-    "Alekuwodo",
-    "Old Garage",
-    "Station Road",
-    "Oke Baale",
-    "Testing Ground",
-    "Ring Road Osogbo",
-    "Ayetoro",
-    "Ogo Oluwa",
-    "Powerline",
-  ],
-
-  Ondo: [
-    "Alagbaka",
-    "FUTA South Gate",
-    "Oba Adesida",
-    "Arakale",
-    "Hospital Road",
-    "Oke Aro",
-    "Ijoka",
-    "Shagari Village",
-    "Fanibi",
-    "Aule",
-  ],
-};
-const areaCoordinates: Record<
-  string,
-  { lat: number; lng: number }
-> = {
-  // Oyo
-  Mokola: { lat: 7.4016, lng: 3.9082 },
-  Dugbe: { lat: 7.3775, lng: 3.8789 },
-  Bodija: { lat: 7.4374, lng: 3.8984 },
-  Challenge: { lat: 7.3510, lng: 3.8902 },
-  "Ring Road": { lat: 7.3657, lng: 3.8968 },
-  Ojoo: { lat: 7.4526, lng: 3.8995 },
-  "Agodi Gate": { lat: 7.3965, lng: 3.9010 },
-  "Iwo Road": { lat: 7.4108, lng: 3.9470 },
-  Eleyele: { lat: 7.4401, lng: 3.8577 },
-  "University of Ibadan": { lat: 7.4432, lng: 3.9006 },
-
-  // Lagos
-  Ikeja: { lat: 6.6018, lng: 3.3515 },
-  Alausa: { lat: 6.6218, lng: 3.3575 },
-  Ojota: { lat: 6.5836, lng: 3.3869 },
-  Maryland: { lat: 6.5731, lng: 3.3677 },
-  Yaba: { lat: 6.5095, lng: 3.3711 },
-  Surulere: { lat: 6.4969, lng: 3.3581 },
-  "Lekki Phase 1": { lat: 6.4478, lng: 3.4726 },
-  "Victoria Island": { lat: 6.4281, lng: 3.4219 },
-  Ikorodu: { lat: 6.6194, lng: 3.5105 },
-  Oshodi: { lat: 6.5535, lng: 3.3431 },
-
-  // Ogun
-  Panseke: { lat: 7.1475, lng: 3.3483 },
-  Kuto: { lat: 7.1558, lng: 3.3531 },
-  Ibara: { lat: 7.1701, lng: 3.3425 },
-  Lafenwa: { lat: 7.1804, lng: 3.3612 },
-  Camp: { lat: 7.1638, lng: 3.3677 },
-  Adatan: { lat: 7.1399, lng: 3.3348 },
-  "Oke-Ilewo": { lat: 7.1529, lng: 3.3416 },
-  Asero: { lat: 7.1585, lng: 3.3314 },
-  "Ita Eko": { lat: 7.1462, lng: 3.3554 },
-  Olomore: { lat: 7.1764, lng: 3.3742 },
-
-  // Osun
-  "Oja Oba": { lat: 7.7715, lng: 4.5560 },
-  Alekuwodo: { lat: 7.7838, lng: 4.5713 },
-  "Old Garage": { lat: 7.7654, lng: 4.5618 },
-  "Station Road": { lat: 7.7607, lng: 4.5572 },
-  "Oke Baale": { lat: 7.7815, lng: 4.5485 },
-  "Testing Ground": { lat: 7.7888, lng: 4.5762 },
-  "Ring Road Osogbo": { lat: 7.7746, lng: 4.5881 },
-  Ayetoro: { lat: 7.7575, lng: 4.5697 },
-  "Ogo Oluwa": { lat: 7.7792, lng: 4.5521 },
-  Powerline: { lat: 7.7863, lng: 4.5648 },
-
-  // Ondo
-  Alagbaka: { lat: 7.2524, lng: 5.2106 },
-  "FUTA South Gate": { lat: 7.2981, lng: 5.1456 },
-  "Oba Adesida": { lat: 7.2508, lng: 5.1954 },
-  Arakale: { lat: 7.2417, lng: 5.2005 },
-  "Hospital Road": { lat: 7.2459, lng: 5.2143 },
-  "Oke Aro": { lat: 7.2611, lng: 5.1892 },
-  Ijoka: { lat: 7.2694, lng: 5.2218 },
-  "Shagari Village": { lat: 7.2831, lng: 5.1757 },
-  Fanibi: { lat: 7.2576, lng: 5.2051 },
-  Aule: { lat: 7.2728, lng: 5.2347 },
-};
-
-
 
 export default function ReportPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -150,6 +20,7 @@ const [latitude, setLatitude] = useState(0);
 const [longitude, setLongitude] = useState(0);
 const [description, setDescription] = useState("");
 const [loading, setLoading] = useState(false);
+
 
 useEffect(() => {
   console.log("Getting location...");
@@ -167,6 +38,7 @@ useEffect(() => {
   );
 }, []);
 
+
 async function handleSubmit(
   e: React.FormEvent
 ) {
@@ -182,29 +54,26 @@ async function handleSubmit(
 
   try {
     setLoading(true);
-    const coordinates =
-  areaCoordinates[area] || {
-    lat: 7.3775,
-    lng: 3.947,
-  };
-
-    const docRef =await addDoc(
-      collection(db, "incidents"),
-      {
-        title,
-        category,
-               description,
-        urgency,
-        confidence: "Low",
-        confirmations: 1,
-        disputes: 0,
-        activeUpdates: 0,
-        latitude: coordinates.lat,
-         longitude: coordinates.lng,
-        location: `${area}, ${stateName}`,
-       createdAt: new Date(),
-      }
-    );
+    //const coordinates =
+ // areaCoordinates[area] || {
+    
+    const docRef = await addDoc(
+  collection(db, "incidents"),
+  {
+    title,
+    category,
+    description,
+    urgency,
+    confidence: "Low",
+    confirmations: 1,
+    disputes: 0,
+    activeUpdates: 0,
+    latitude,
+    longitude,
+    location: `${area}, ${stateName}`,
+    createdAt: new Date(),
+  }
+);
     localStorage.setItem(
   `confirm-${docRef.id}`,
   "true"
@@ -212,8 +81,9 @@ async function handleSubmit(
 
     setSubmitted(true);
   } catch (error) {
-    console.error(error);
-    alert("Failed to submit report");
+  console.error(error);
+  alert("Failed to submit report");
+
   } finally {
     setLoading(false);
   }
@@ -332,44 +202,30 @@ async function handleSubmit(
     State
   </label>
 
-  <select
+  <input
+    type="text"
     value={stateName}
-    onChange={(e) => {
-      setStateName(e.target.value);
-      setArea("");
-    }}
+    onChange={(e) =>
+      setStateName(e.target.value)
+    }
+    placeholder="e.g Oyo"
     className="w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-white"
-  >
-    {Object.keys(locations).map((state) => (
-      <option key={state} value={state}>
-        {state}
-      </option>
-    ))}
-  </select>
+  />
 </div>
 
-<div>
+         <div>
   <label className="mb-2 mt-4 block font-medium text-slate-200">
     Area / Landmark
   </label>
 
-  <select
+  <input
+    type="text"
     value={area}
     onChange={(e) => setArea(e.target.value)}
+    placeholder="e.g Mokola, Challenge, Bodija"
     className="w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-white"
-  >
-    <option value="">Select Area</option>
-
-    {locations[
-      stateName as keyof typeof locations
-    ].map((place) => (
-      <option key={place} value={place}>
-        {place}
-      </option>
-    ))}
-  </select>
+  />
 </div>
-         
 
           <div>
             <label className="mb-2 block font-medium text-slate-200">
@@ -387,16 +243,7 @@ async function handleSubmit(
 />
           </div>
           <div>
-  <label className="mb-2 block font-medium text-slate-200">
-    Upload Photo Evidence
-  </label>
-
-  <input
-  type="file"
-  accept="image/*"
-  capture="environment"
-  className="w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-white"
-/>
+  
 </div>
 
          <button

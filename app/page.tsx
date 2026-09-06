@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main  className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950">
+    <main  className="min-h-screen bg-linear-to-r from-slate-950 via-slate-900 to-blue-950">
             <Navbar />
 
       <section className="mx-auto max-w-6xl px-6 py-24">
@@ -125,7 +125,7 @@ export default function Home() {
       </div>
     </div>
 
-    <div className="mt-16 rounded-3xl bg-gradient-to-r from-cyan-600 via-blue-700 to-slate-900 p-10 text-white shadow-2xl">
+    <div className="mt-16 rounded-3xl bg-linear-to-r from-cyan-600 via-blue-700 to-slate-900 p-10 text-white shadow-2xl">
       <h3 className="text-3xl font-bold">
         Our Solution
       </h3>
@@ -160,7 +160,7 @@ export default function Home() {
           1
         </div>
 
-        <h3 className="text-xl font-semibold text-slate-900">
+        <h3 className="text-xl font-semibold text-white">
           Report
         </h3>
 
@@ -175,7 +175,7 @@ export default function Home() {
           2
         </div>
 
-        <h3 className="text-xl font-semibold text-slate-900">
+        <h3 className="text-xl font-semibold text-white">
           Verify
         </h3>
 
@@ -190,7 +190,7 @@ export default function Home() {
           3
         </div>
 
-        <h3 className="text-xl font-semibold text-slate-900">
+        <h3 className="text-xl font-semibold text-white">
           Explore
         </h3>
 
@@ -205,7 +205,7 @@ export default function Home() {
 
 <section className="mx-auto max-w-6xl px-6 pb-24">
   <h2 className="mb-8 text-center text-3xl font-bold text-white">
-    🔥 Trending Incidents
+     Trending Incidents
   </h2>
 
   <div className="grid gap-6 md:grid-cols-3">
@@ -260,16 +260,16 @@ export default function Home() {
   <div  className="rounded-3xl border border-cyan-900/30 bg-slate-900/40 p-8 backdrop-blur-sm">
    <div className="space-y-4 text-slate-300">
        <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4">
-  ✅ Flooding report confirmed by 3 users
+  Flooding report confirmed by 3 users
 </div>
      <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4">
-     ⚠️ New traffic incident reported at Dugbe
+     New traffic incident reported at Dugbe
      </div> 
       <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4">
-      🔌 Power outage reported at Bodija
+      Power outage reported at Bodija
       </div>
       <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4">
-      🗑️ Waste issue updated at Ring Road
+       Waste issue updated at Ring Road
       </div>
     </div>
   </div>
@@ -401,7 +401,7 @@ export default function Home() {
   </div>
 </section>
 
-<section className="border-t border-cyan-900/40 bg-gradient-to-r from-slate-950 via-slate-900 to-cyan-950 py-24">
+<section className="border-t border-cyan-900/40 bg-linearto-r from-slate-950 via-slate-900 to-cyan-950 py-24">
   <div className="mx-auto max-w-4xl px-6 text-center">
     <h2 className="text-5xl font-bold text-white">
       Help Communities Stay Informed

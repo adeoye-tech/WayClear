@@ -2,7 +2,7 @@
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
-import IncidentSidebar from "@/components/IncidentSidebar";
+import Link from "next/link";
 import FilterBar from "@/components/FilterBar";
 
 import dynamic from "next/dynamic";
@@ -120,7 +120,7 @@ const highConfidenceReports =
 <div className="mt-8">
   <input
     type="text"
-    placeholder="🔍 Search incidents, locations or communities..."
+    placeholder=" Search incidents, locations or communities..."
     value={searchTerm}
     onChange={(e) =>
       setSearchTerm(e.target.value)
@@ -136,7 +136,7 @@ const highConfidenceReports =
 <div className="mt-8 grid gap-4 md:grid-cols-4">
   <div className="rounded-2xl border border-cyan-900/40 bg-slate-900/80 p-6 shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500 hover:shadow-cyan-500/20">
     <p className="text-sm text-slate-500">
-      📍 Active Reports
+       Active Reports
     </p>
 
     <h3 className="mt-2 text-3xl font-bold text-cyan-300">
@@ -146,7 +146,7 @@ const highConfidenceReports =
 
   <div className="rounded-2xl border border-cyan-900/40 bg-slate-900/80 p-6 shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500 hover:shadow-cyan-500/20">
     <p className="text-sm text-slate-500">
-  ✅ Verifications
+   Verifications
     </p>
 
     <h3 className="mt-2 text-3xl font-bold text-cyan-300">
@@ -156,7 +156,7 @@ const highConfidenceReports =
 
   <div className="rounded-2xl border border-cyan-900/40 bg-slate-900/80 p-6 shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500 hover:shadow-cyan-500/20">
     <p className="text-sm text-slate-500">
-      🏘️ Communities
+       Communities
     </p>
 
     <h3 className="mt-2 text-3xl font-bold text-cyan-300">
@@ -166,7 +166,7 @@ const highConfidenceReports =
 
   <div className="rounded-2xl border border-cyan-900/40 bg-slate-900/80 p-6 shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500 hover:shadow-cyan-500/20">
     <p className="text-sm text-slate-500">
-      ⭐ High Confidence
+       High Confidence
     </p>
 
     <h3 className="mt-2 text-3xl font-bold text-cyan-300">
@@ -198,26 +198,28 @@ const highConfidenceReports =
   />
 </div>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-3">
-  <div className="overflow-hidden rounded-3xl border border-cyan-500/20 bg-[#081a3a] shadow-[0_0_30px_rgba(6,182,212,0.08)] lg:col-span-2">
+       <div className="mt-8">
+  <div className="overflow-hidden rounded-3xl border border-cyan-500/20 bg-[#081a3a] shadow-[0_0_30px_rgba(6,182,212,0.08)]">
+    <div className="border-b border-cyan-500/20 px-6 py-4">
+      <h2 className="text-2xl font-bold text-white">
+        Live Incident Map
+      </h2>
 
-  <div className="border-b border-cyan-500/20 px-6 py-4">
-    <h2 className="text-2xl font-bold text-white">
-      Live Incident Map
-    </h2>
-
-    <p className="mt-1 text-sm text-slate-400">
-      Community-reported incidents across Ibadan
-    </p>
-  </div>
-
-  <MapComponent incidents={filteredIncidents} />
-
+      <p className="mt-1 text-sm text-slate-400">
+        Community reported incidents across Nigeria
+      </p>
+    </div>
+    <div className="mb-4 flex justify-end">
+  <a
+    href="/incidents"
+    className="rounded-xl bg-cyan-600 px-5 py-3 font-semibold text-white hover:bg-cyan-500"
+  >
+    View All Reports
+  </a>
 </div>
 
-  <IncidentSidebar
-    incidents={filteredIncidents}
-  />
+    <MapComponent incidents={filteredIncidents} />
+  </div>
 </div>
       </section>
       <div className="mt-16">
