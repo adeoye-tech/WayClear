@@ -1,9 +1,11 @@
 "use client";
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import FilterBar from "@/components/FilterBar";
+import { findFloodZones } from "@/lib/zones";
 
 import dynamic from "next/dynamic";
 import { db } from "@/lib/firebase";
@@ -24,6 +26,10 @@ export default function MapPage() {
     useState("All");
     const [incidents, setIncidents] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const searchParams = useSearchParams();
+    const incidentId = searchParams.get("incident");
+
+
     useEffect(() => {
   const unsubscribe = onSnapshot(
     collection(db, "incidents"),
@@ -33,6 +39,12 @@ export default function MapPage() {
     id: doc.id,
     ...doc.data(),
   }))
+  .filter(
+  (incident: any) =>
+    incident.expiresAt &&
+    incident.expiresAt.toDate() > new Date()
+)
+  
   .sort(
     (a: any, b: any) =>
       b.createdAt?.toDate().getTime() -
@@ -82,16 +94,36 @@ const highConfidenceReports =
       incident.location
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
+        
 
     return matchesCategory && matchesSearch;
   }
 );
-
+const floodZones =
+  findFloodZones(filteredIncidents);
+const selectedIncident = incidents.find(
+  (incident) => incident.id === incidentId
+);
   return (
     <main className="min-h-screen bg-slate-950">
       <Navbar />
 
       <section className="mx-auto max-w-7xl px-6 py-10">
+        {selectedIncident && (
+  <div className="mb-6 rounded-2xl border border-yellow-500 bg-yellow-500/10 p-4">
+    <p className="font-semibold text-yellow-300">
+      Nearby Incident Alert
+    </p>
+
+    <p className="mt-2 text-white">
+      {selectedIncident.title}
+    </p>
+
+    <p className="text-slate-300">
+      {selectedIncident.location}
+    </p>
+  </div>
+)}
         <h1 className="text-5xl font-bold text-white">
   WayClear
 </h1>
@@ -218,7 +250,11 @@ const highConfidenceReports =
   </a>
 </div>
 
-    <MapComponent incidents={filteredIncidents} />
+   <MapComponent
+  incidents={filteredIncidents}
+  floodZones={floodZones}
+  selectedIncidentId={incidentId}
+/>
   </div>
 </div>
       </section>

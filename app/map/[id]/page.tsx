@@ -47,18 +47,49 @@ function  getUrgencyStyle(
 
   fetchIncident();
 }, [id]);
-  if (!incident) {
-    return (
-     <main className="min-h-screen bg-slate-950">
-        <Navbar />
-        <div className="mx-auto max-w-4xl px-6 py-12">
-          <h1 className="text-3xl font-bold">
-            Incident Not Found
-          </h1>
-        </div>
-      </main>
-    );
-  }
+
+    
+
+   if (!incident) {
+  return (
+    <main className="min-h-screen bg-slate-950">
+      <Navbar />
+      <div className="mx-auto max-w-4xl px-6 py-12">
+        <h1 className="text-3xl font-bold text-white">
+          Loading...
+        </h1>
+      </div>
+    </main>
+  );
+}
+
+if (
+  incident.expiresAt &&
+  incident.expiresAt.toDate() < new Date()
+) {
+  return (
+    <main className="min-h-screen bg-slate-950">
+      <Navbar />
+
+      <div className="mx-auto max-w-4xl px-6 py-20 text-center">
+        <h1 className="text-4xl font-bold text-white">
+          Report Expired
+        </h1>
+
+        <p className="mt-4 text-slate-300">
+          This incident report is no longer active.
+        </p>
+
+        <Link
+          href="/map"
+          className="mt-8 inline-block rounded-xl bg-cyan-600 px-6 py-3 font-semibold text-white"
+        >
+          Back to Map
+        </Link>
+      </div>
+    </main>
+  );
+}
 
   return (
    <main className="min-h-screen bg-slate-950">
@@ -76,6 +107,7 @@ function  getUrgencyStyle(
           <h1 className="text-4xl font-bold text-white">
             {incident.title}
           </h1>
+          
 
          <p className="mt-4 text-lg text-slate-300">
             {incident.location}

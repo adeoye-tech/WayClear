@@ -1,10 +1,89 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useEffect,  useState  } from "react";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { getFCMToken } from "@/lib/messaging";
+import { getNearbyIncidents } from "@/lib/nearbyIncidents";
 
 export default function Home() {
+  const [nearbyAlerts, setNearbyAlerts] = useState<any[]>([]);
+  useEffect(() => {
+  async function registerUser() {
+    try {
+      const permission = await Notification.requestPermission();
+
+      if (permission !== "granted") return;
+
+      const token = await getFCMToken();
+console.log("FCM Token:", token);
+      if (!token) return;
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          console.log("Latitude:", position.coords.latitude);
+          console.log("Longitude:", position.coords.longitude);
+const nearby = await getNearbyIncidents(
+  position.coords.latitude,
+  position.coords.longitude
+);
+
+console.log("Nearby Incidents:", nearby);
+setNearbyAlerts(nearby);
+if (nearby.length > 0) {
+  const incident = nearby[0] as any;
+
+  new Notification("WayClear Alert", {
+    body: `${incident.title} reported near your location`,
+  });
+}
+          await setDoc(
+            doc(db, "users", token),
+            {
+              token,
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              notificationsEnabled: true,
+              lastUpdated: new Date(),
+            }
+          );
+
+          console.log("User registered");
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  registerUser();
+}, []);
   return (
     <main  className="min-h-screen bg-linear-to-r from-slate-950 via-slate-900 to-blue-950">
             <Navbar />
+            {nearbyAlerts.length > 0 && (
+  <div className="mx-auto max-w-6xl px-6 pt-6">
+    <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+  <p className="font-semibold text-yellow-300">
+     {nearbyAlerts[0]?.title} reported near {nearbyAlerts[0]?.location}
+  </p>
+
+ <a
+  href={`/map?incident=${nearbyAlerts[0]?.id}`}
+  className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-yellow-400"
+>
+  View on Map
+</a>
+</div>
+    </div>
+  </div>
+)}
 
       <section className="mx-auto max-w-6xl px-6 py-24">
   <div className="text-center">

@@ -5,6 +5,10 @@ import {
   getDocs,
   collection,
   addDoc,
+  serverTimestamp,
+  updateDoc,
+  increment,
+  doc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Navbar from "@/components/Navbar";
@@ -14,29 +18,104 @@ export default function ReportPage() {
   const [title, setTitle] = useState("");
 const [category, setCategory] = useState("Flood");
 const [urgency, setUrgency] = useState("Medium");
-const [stateName, setStateName] = useState("Oyo");
+const [stateName, setStateName] = useState("");
+const [town, setTown] = useState("");
 const [area, setArea] = useState(""); 
+
 const [latitude, setLatitude] = useState(0);
 const [longitude, setLongitude] = useState(0);
 const [description, setDescription] = useState("");
 const [loading, setLoading] = useState(false);
 
+const [imageUrl, setImageUrl] = useState("");
+const [uploading, setUploading] = useState(false);
 
 useEffect(() => {
-  console.log("Getting location...");
-
   navigator.geolocation.getCurrentPosition(
-    (position) => {
-      console.log(position);
+    async (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
 
-      setLatitude(position.coords.latitude);
-      setLongitude(position.coords.longitude);
+      setLatitude(lat);
+      setLongitude(lng);
+
+      try {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+  );
+
+  const data = await response.json();
+
+  console.log(data.address);
+
+
+  setStateName(
+    data.address.state || ""
+  );
+
+  setTown(
+    data.address.city ||
+    data.address.town ||
+    data.address.village ||
+    data.address.county ||
+    data.address.suburb ||
+    data.address.municipality ||
+    ""
+  );
+
+  setArea(
+  data.address.suburb ||
+  data.address.neighbourhood ||
+  data.address.residential ||
+  data.address.city_district ||
+  data.address.borough ||
+  data.address.hamlet ||
+  data.address.quarter ||
+  data.address.road ||
+  ""
+);
+} catch (error) {
+  console.log("Address lookup failed", error);
+}
     },
     (error) => {
       console.log("Location error:", error);
+    },
+    {
+      enableHighAccuracy: true,
     }
   );
 }, []);
+const uploadImage = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
+
+  if (!file) return;
+
+  setUploading(true);
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append(
+    "upload_preset",
+    "wayclear_upload"
+  );
+
+  const response = await fetch(
+    "https://api.cloudinary.com/v1_1/gwbus95k/image/upload",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+  console.log(data);
+
+  setImageUrl(data.secure_url);
+  setUploading(false);
+};
 
 
 async function handleSubmit(
@@ -53,25 +132,111 @@ async function handleSubmit(
 }
 
   try {
-    setLoading(true);
-    //const coordinates =
- // areaCoordinates[area] || {
-    
-    const docRef = await addDoc(
+  setLoading(true);
+
+  const position =
+    await new Promise<GeolocationPosition>(
+      (resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          resolve,
+          reject,
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+          }
+        );
+      }
+    );
+
+  const currentLat =
+    position.coords.latitude;
+
+  const currentLng =
+    position.coords.longitude;
+   
+const expiryHours: Record<string, number> = {
+  Traffic: 1,
+  Accident: 2,
+  Protest: 6,
+  Flood: 24,
+  Road: 24,
+  Electricity: 12,
+  Waste: 48,
+};
+
+const expiresAt = new Date(
+  Date.now() +
+    (expiryHours[category] || 24) *
+      60 *
+      60 *
+      1000
+);
+const snapshot = await getDocs(
+  collection(db, "incidents")
+);
+
+const existingIncident = snapshot.docs.find(
+  (docItem) => {
+    const data: any = docItem.data();
+
+    const sameCategory =
+      data.category === category;
+
+    const sameArea =
+      data.location?.includes(area);
+
+    if (!data.createdAt) return false;
+
+    const createdTime =
+      data.createdAt.toDate().getTime();
+
+    const tenMinutesAgo =
+      Date.now() - 10 * 60 * 1000;
+      
+
+    return (
+      sameCategory &&
+      sameArea &&
+      createdTime > tenMinutesAgo
+    );
+  }
+);
+if (existingIncident) {
+  await updateDoc(
+    doc(db, "incidents", existingIncident.id),
+    {
+      confirmations: increment(1),
+      lastUpdated: serverTimestamp(),
+    }
+  );
+
+  alert(
+    "Similar report already exists. Added as confirmation."
+  );
+
+  setSubmitted(true);
+  setLoading(false);
+  return;
+}
+  const docRef = await addDoc(
   collection(db, "incidents"),
   {
     title,
     category,
     description,
     urgency,
+    imageUrl,
     confidence: "Low",
     confirmations: 1,
     disputes: 0,
     activeUpdates: 0,
-    latitude,
-    longitude,
-    location: `${area}, ${stateName}`,
-    createdAt: new Date(),
+    latitude: currentLat,
+    longitude: currentLng,
+    location: `${area}, ${town}, ${stateName}`,
+    createdAt: serverTimestamp(),
+     expiresAt, 
+lastUpdated: serverTimestamp(),
+    notificationsEnabled: true,
   }
 );
     localStorage.setItem(
@@ -201,30 +366,37 @@ async function handleSubmit(
   <label className="mb-2 block font-medium text-slate-200">
     State
   </label>
-
   <input
     type="text"
-    value={stateName}
-    onChange={(e) =>
-      setStateName(e.target.value)
-    }
-    placeholder="e.g Oyo"
-    className="w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-white"
+    value={stateName || "Detecting location..."}
+    readOnly
+    className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3 text-white"
+  />
+
+  <div>
+  <label className="mb-2 block font-medium text-slate-200">
+    Town / City
+  </label>
+  <input
+    type="text"
+    value={town || "Detecting location..."}
+    readOnly
+    className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3 text-white"
   />
 </div>
+</div>
 
-         <div>
-  <label className="mb-2 mt-4 block font-medium text-slate-200">
+        <div>
+  <label className="mb-2 block font-medium text-slate-200">
     Area / Landmark
   </label>
-
   <input
-    type="text"
-    value={area}
-    onChange={(e) => setArea(e.target.value)}
-    placeholder="e.g Mokola, Challenge, Bodija"
-    className="w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-white"
-  />
+  type="text"
+  value={area}
+  onChange={(e) => setArea(e.target.value)}
+  placeholder="Enter area or landmark if detection is slow"
+  className="w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-white outline-none focus:border-cyan-500"
+/>
 </div>
 
           <div>
@@ -242,6 +414,33 @@ async function handleSubmit(
   className="w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-white outline-none transition-all focus:border-cyan-500"
 />
           </div>
+          <div className="mt-4">
+  <label className="mb-2 block font-medium">
+    Photo Evidence
+  </label>
+
+  <input
+    type="file"
+    accept="image/*"
+    capture="environment"
+    onChange={uploadImage}
+    className="w-full rounded-lg border border-cyan-500 bg-slate-800 p-3 text-white"
+  />
+
+  {uploading && (
+    <p className="mt-2 text-sm text-blue-500">
+      Uploading image...
+    </p>
+  )}
+
+  {imageUrl && (
+    <img
+      src={imageUrl}
+      alt="Evidence"
+      className="mt-3 h-40 w-full rounded-lg object-cover"
+    />
+  )}
+</div>
           <div>
   
 </div>
