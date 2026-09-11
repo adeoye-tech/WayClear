@@ -155,11 +155,8 @@ async function handleSubmit(
     position.coords.longitude;
    
 const expiryHours: Record<string, number> = {
-  Traffic: 1,
-  Accident: 2,
-  Protest: 6,
+  Road: 2,
   Flood: 24,
-  Road: 24,
   Electricity: 12,
   Waste: 48,
 };

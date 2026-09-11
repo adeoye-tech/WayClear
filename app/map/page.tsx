@@ -1,7 +1,6 @@
 "use client";
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import FilterBar from "@/components/FilterBar";
@@ -22,12 +21,15 @@ const MapComponent = dynamic(
 );
 
 export default function MapPage() {
-  const [selectedCategory, setSelectedCategory] =
-    useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
     const [incidents, setIncidents] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const searchParams = useSearchParams();
-    const incidentId = searchParams.get("incident");
+    const [incidentId, setIncidentId] = useState<string | null>(null);
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  setIncidentId(params.get("incident"));
+}, []);
 
 
     useEffect(() => {
