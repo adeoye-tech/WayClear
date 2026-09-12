@@ -27,7 +27,7 @@ const [longitude, setLongitude] = useState(0);
 const [description, setDescription] = useState("");
 const [loading, setLoading] = useState(false);
 
-const [imageUrl, setImageUrl] = useState("");
+const [videoUrl, setVideoUrl] = useState("");
 const [uploading, setUploading] = useState(false);
 
 useEffect(() => {
@@ -86,24 +86,31 @@ useEffect(() => {
     }
   );
 }, []);
-const uploadImage = async (
+const uploadVideo = async (
   e: React.ChangeEvent<HTMLInputElement>
 ) => {
   const file = e.target.files?.[0];
 
   if (!file) return;
 
+  if (file.size > 20 * 1024 * 1024) {
+    alert("Video must be less than 20MB");
+    return;
+  }
+
   setUploading(true);
 
   const formData = new FormData();
+
   formData.append("file", file);
+
   formData.append(
     "upload_preset",
     "wayclear_upload"
   );
 
   const response = await fetch(
-    "https://api.cloudinary.com/v1_1/gwbus95k/image/upload",
+    "https://api.cloudinary.com/v1_1/gwbus95k/video/upload",
     {
       method: "POST",
       body: formData,
@@ -111,9 +118,11 @@ const uploadImage = async (
   );
 
   const data = await response.json();
+
   console.log(data);
 
-  setImageUrl(data.secure_url);
+  setVideoUrl(data.secure_url);
+
   setUploading(false);
 };
 
@@ -214,7 +223,10 @@ if (existingIncident) {
   setSubmitted(true);
   setLoading(false);
   return;
+
 }
+
+console.log("Video URL:", videoUrl);
   const docRef = await addDoc(
   collection(db, "incidents"),
   {
@@ -222,7 +234,7 @@ if (existingIncident) {
     category,
     description,
     urgency,
-    imageUrl,
+    videoUrl,
     confidence: "Low",
     confirmations: 1,
     disputes: 0,
@@ -410,32 +422,31 @@ lastUpdated: serverTimestamp(),
   }
   className="w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-white outline-none transition-all focus:border-cyan-500"
 />
-          </div>
-          <div className="mt-4">
-  <label className="mb-2 block font-medium">
-    Photo Evidence
+          
+          
+</div>
+<div className="mt-6">
+  <label className="mb-2 block text-sm font-medium text-white">
+    Video Evidence (Optional)
   </label>
 
   <input
     type="file"
-    accept="image/*"
-    capture="environment"
-    onChange={uploadImage}
-    className="w-full rounded-lg border border-cyan-500 bg-slate-800 p-3 text-white"
+    accept="video/*"
+    onChange={uploadVideo}
+    className="w-full rounded-xl border border-cyan-500/30 bg-slate-900 p-3 text-white file:mr-4 file:rounded-lg file:border-0 file:bg-cyan-600 file:px-4 file:py-2 file:text-white hover:file:bg-cyan-500"
   />
 
   {uploading && (
-    <p className="mt-2 text-sm text-blue-500">
-      Uploading image...
+    <p className="mt-2 text-cyan-300">
+      Uploading video...
     </p>
   )}
 
-  {imageUrl && (
-    <img
-      src={imageUrl}
-      alt="Evidence"
-      className="mt-3 h-40 w-full rounded-lg object-cover"
-    />
+  {videoUrl && (
+    <p className="mt-2 text-green-400">
+      ✓ Video uploaded successfully
+    </p>
   )}
 </div>
           <div>
