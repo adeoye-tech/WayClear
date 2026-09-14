@@ -41,11 +41,7 @@ useEffect(() => {
     id: doc.id,
     ...doc.data(),
   }))
-  .filter(
-  (incident: any) =>
-    incident.expiresAt &&
-    incident.expiresAt.toDate() > new Date()
-)
+  
   
   .sort(
     (a: any, b: any) =>

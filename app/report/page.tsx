@@ -26,9 +26,9 @@ const [latitude, setLatitude] = useState(0);
 const [longitude, setLongitude] = useState(0);
 const [description, setDescription] = useState("");
 const [loading, setLoading] = useState(false);
-
 const [videoUrl, setVideoUrl] = useState("");
 const [uploading, setUploading] = useState(false);
+
 
 useEffect(() => {
   navigator.geolocation.getCurrentPosition(
@@ -163,20 +163,7 @@ async function handleSubmit(
   const currentLng =
     position.coords.longitude;
    
-const expiryHours: Record<string, number> = {
-  Road: 2,
-  Flood: 24,
-  Electricity: 12,
-  Waste: 48,
-};
 
-const expiresAt = new Date(
-  Date.now() +
-    (expiryHours[category] || 24) *
-      60 *
-      60 *
-      1000
-);
 const snapshot = await getDocs(
   collection(db, "incidents")
 );
@@ -243,8 +230,7 @@ console.log("Video URL:", videoUrl);
     longitude: currentLng,
     location: `${area}, ${town}, ${stateName}`,
     createdAt: serverTimestamp(),
-     expiresAt, 
-lastUpdated: serverTimestamp(),
+     lastUpdated: serverTimestamp(),
     notificationsEnabled: true,
   }
 );
@@ -315,7 +301,7 @@ lastUpdated: serverTimestamp(),
       </div>
     </div>
  
-)
+
 
         <form
   onSubmit={handleSubmit}

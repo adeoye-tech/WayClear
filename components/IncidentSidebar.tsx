@@ -84,10 +84,74 @@ function getUrgencyStyle(urgency: string) {
 export default function IncidentSidebar({
   incidents,
 }: IncidentSidebarProps) {
-  const [message, setMessage] =
-  useState("");
-  const [processing, setProcessing] =
-  useState<string | null>(null);
+    const [message, setMessage] = useState("");
+const [processing, setProcessing] = useState<string | null>(null);
+
+const [currentPage, setCurrentPage] = useState(1);
+const [searchTerm, setSearchTerm] = useState("");
+const [sortBy, setSortBy] = useState("newest");
+
+const reportsPerPage = 5;
+const filteredReports = incidents.filter(
+  (incident) =>
+    incident.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()) ||
+    incident.location
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()) ||
+    incident.category
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+);
+const sortedReports = [...filteredReports].sort(
+  (a, b) => {
+    switch (sortBy) {
+      case "confirmed":
+        return b.confirmations - a.confirmations;
+
+      case "active":
+        return (
+          (b.activeUpdates || 0) -
+          (a.activeUpdates || 0)
+        );
+
+      case "confidence":
+        const confidenceRank = {
+          High: 3,
+          Medium: 2,
+          Low: 1,
+        };
+
+        return (
+          confidenceRank[
+            b.confidence as keyof typeof confidenceRank
+          ] -
+          confidenceRank[
+            a.confidence as keyof typeof confidenceRank
+          ]
+        );
+
+      default:
+        return (
+          b.createdAt?.seconds -
+          a.createdAt?.seconds
+        );
+    }
+  }
+);
+
+const totalPages = Math.ceil(
+  sortedReports.length / reportsPerPage
+);
+
+const startIndex =
+  (currentPage - 1) * reportsPerPage;
+
+const currentReports = sortedReports.slice(
+  startIndex,
+  startIndex + reportsPerPage
+);
  async function confirmReport(
   id: string,
   currentConfirmations: number
@@ -241,13 +305,47 @@ return (
 )}
 
   <p className="mt-6 text-sm text-slate-400">
-    Showing {incidents.length} active community reports
+   Showing {filteredReports.length} active community reports
   </p>
+  <input
+  type="text"
+  placeholder="Search reports..."
+  value={searchTerm}
+  onChange={(e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  }}
+  className="mt-4 w-full rounded-xl border border-cyan-500/20 bg-slate-900 px-4 py-3 text-white outline-none focus:border-cyan-400"
+/>
+<select
+  value={sortBy}
+  onChange={(e) => {
+    setSortBy(e.target.value);
+    setCurrentPage(1);
+  }}
+  className="mt-3 w-full rounded-xl border border-cyan-500/20 bg-slate-900 px-4 py-3 text-white"
+>
+  <option value="newest">
+    Newest Reports
+  </option>
+
+  <option value="confirmed">
+    Most Confirmed
+  </option>
+
+  <option value="active">
+    Most Active
+  </option>
+
+  <option value="confidence">
+    Highest Confidence
+  </option>
+</select>
   
 
 
      <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {incidents.map((incident) => (
+       {currentReports.map((incident) => (
           
   <Link
   href={`/map/${incident.id}`}
@@ -375,6 +473,50 @@ className={`text-lg font-semibold ${
           </Link>
         ))}
       </div>
+    <div className="mt-8 flex items-center justify-center gap-2">
+  <button
+    onClick={() =>
+      setCurrentPage((prev) =>
+        Math.max(prev - 1, 1)
+      )
+    }
+    disabled={currentPage === 1}
+    className="rounded-xl border border-cyan-500/20 px-4 py-2 text-white disabled:opacity-50"
+  >
+    Previous
+  </button>
+
+  {Array.from(
+    { length: totalPages },
+    (_, index) => (
+      <button
+        key={index + 1}
+        onClick={() =>
+          setCurrentPage(index + 1)
+        }
+        className={`rounded-xl px-4 py-2 ${
+          currentPage === index + 1
+            ? "bg-cyan-600 text-white"
+            : "border border-cyan-500/20 text-slate-300"
+        }`}
+      >
+        {index + 1}
+      </button>
+    )
+  )}
+
+  <button
+    onClick={() =>
+      setCurrentPage((prev) =>
+        Math.min(prev + 1, totalPages)
+      )
+    }
+    disabled={currentPage === totalPages}
+    className="rounded-xl border border-cyan-500/20 px-4 py-2 text-white disabled:opacity-50"
+  >
+    Next
+  </button>
+</div>
     </div>
 );
 }

@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useEffect,  useState  } from "react";
@@ -7,15 +7,41 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { getFCMToken } from "@/lib/messaging";
 import { getNearbyIncidents } from "@/lib/nearbyIncidents";
+import {
+  collection,
+  onSnapshot,
+} from "firebase/firestore";
 
 export default function Home() {
   const [nearbyAlerts, setNearbyAlerts] = useState<any[]>([]);
+  const [incidents, setIncidents] = useState<any[]>([]);
+  useEffect(() => {
+  const unsubscribe = onSnapshot(
+    collection(db, "incidents"),
+    (snapshot) => {
+      const data = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .sort(
+          (a: any, b: any) =>
+            b.createdAt?.toDate().getTime() -
+            a.createdAt?.toDate().getTime()
+        );
+
+      setIncidents(data);
+    }
+  );
+
+  return () => unsubscribe();
+}, []);
   useEffect(() => {
   async function registerUser() {
     try {
-      const permission = await Notification.requestPermission();
+    const permission = await Notification.requestPermission();
 
-      if (permission !== "granted") return;
+    if (permission !== "granted") return;
 
       const token = await getFCMToken();
 console.log("FCM Token:", token);
@@ -32,13 +58,7 @@ const nearby = await getNearbyIncidents(
 
 console.log("Nearby Incidents:", nearby);
 setNearbyAlerts(nearby);
-if (nearby.length > 0) {
-  const incident = nearby[0] as any;
 
-  new Notification("WayClear Alert", {
-    body: `${incident.title} reported near your location`,
-  });
-}
           await setDoc(
             doc(db, "users", token),
             {
@@ -63,6 +83,44 @@ if (nearby.length > 0) {
 
   registerUser();
 }, []);
+const totalReports = incidents.length;
+
+const totalVerifications = incidents.reduce(
+  (sum, incident) =>
+    sum + (incident.confirmations || 0),
+  0
+);
+
+const totalCommunities = new Set(
+  incidents.map(
+    (incident) => incident.location
+  )
+).size;
+const trendingIncidents = [...incidents]
+  .sort(
+    (a: any, b: any) =>
+      (b.confirmations || 0) -
+      (a.confirmations || 0)
+  )
+  .slice(0, 3);
+  const recentActivities = incidents
+  .slice(0, 4);
+  const floodReports = incidents.filter(
+  (incident) => incident.category === "Flood"
+).length;
+
+const trafficReports = incidents.filter(
+  (incident) => incident.category === "Traffic"
+).length;
+
+const wasteReports = incidents.filter(
+  (incident) => incident.category === "Waste"
+).length;
+
+const verifiedReports = incidents.filter(
+  (incident) => incident.confidence === "High"
+).length;
+
   return (
     <main  className="min-h-screen bg-linear-to-r from-slate-950 via-slate-900 to-blue-950">
             <Navbar />
@@ -127,7 +185,7 @@ if (nearby.length > 0) {
   <div className="grid gap-6 md:grid-cols-3">
     <div className="rounded-3xl border border-cyan-900/30 bg-slate-900/50 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
       <h3 className="text-4xl font-bold text-cyan-300">
-        8
+       {totalReports}
       </h3>
       <p className="mt-2 text-slate-600">
         Active Reports
@@ -136,7 +194,7 @@ if (nearby.length > 0) {
 
     <div className="rounded-3xl border border-cyan-900/30 bg-slate-900/50 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
       <h3 className="text-4xl font-bold text-cyan-300">
-        124
+        {totalVerifications}
       </h3>
       <p className="mt-2 text-slate-600">
         Community Verifications
@@ -145,7 +203,7 @@ if (nearby.length > 0) {
 
     <div className="rounded-3xl border border-cyan-900/30 bg-slate-900/50 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
       <h3 className="text-4xl font-bold text-cyan-300">
-        6
+       {totalCommunities}
       </h3>
       <p className="mt-2 text-slate-600">
         Communities Covered
@@ -286,50 +344,41 @@ if (nearby.length > 0) {
   <h2 className="mb-8 text-center text-3xl font-bold text-white">
      Trending Incidents
   </h2>
+ <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
-  <div className="grid gap-6 md:grid-cols-3">
-    <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:shadow-xl">
-      <h3 className="font-semibold text-white">
-        Traffic Gridlock
+  
+  {trendingIncidents.length > 0 ? (
+  trendingIncidents.map((incident) => (
+ <Link
+  href={`/map/${incident.id}`}
+  key={incident.id}
+  className="block min-h-[220px] rounded-3xl border border-slate-800 bg-slate-900/60 p-6 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:shadow-xl"
+>
+      <h3 className="text-xl font-semibold text-white">
+        {incident.title}
       </h3>
 
-      <p className="mt-2 text-slate-300">
-        Iwo Road, Ibadan
+      <p  className="mt-3 text-slate-300 -wrap-break-words">
+        {incident.location}
       </p>
 
       <p className="mt-4 font-semibold text-cyan-300">
-        31 confirmations
+        {incident.confirmations || 0} confirmations
       </p>
-    </div>
-
-    <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:shadow-xl">
-      <h3 className="font-semibold text-white">
-        Flooding
-      </h3>
-
-      <p className="mt-2 text-slate-300">
-        Mokola, Ibadan
-      </p>
-
-      <p className="mt-4 font-semibold text-cyan-300">
-        27 confirmations
-      </p>
-    </div>
-
-    <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:shadow-xl">
-      <h3 className="font-semibold text-white">
-        Road Construction
-      </h3>
-
-      <p className="mt-2 text-slate-300">
-        UI Road, Ibadan
-      </p>
-
-      <p className="mt-4 font-semibold text-cyan-300">
-        25 confirmations
-      </p>
-    </div>
-  </div>
+      <p className="mt-4 text-sm font-medium text-cyan-400">
+  View details →
+</p>
+    </Link>
+  ))
+) : (
+  <p className="text-slate-400">
+    No trending incidents available.
+  </p>
+)}
+    
+  
+</div>
+ 
 </section>
 <section className="mx-auto max-w-6xl px-6 pb-24">
  <h2 className="mb-8 text-center text-3xl font-bold text-white">
@@ -338,18 +387,15 @@ if (nearby.length > 0) {
 
   <div  className="rounded-3xl border border-cyan-900/30 bg-slate-900/40 p-8 backdrop-blur-sm">
    <div className="space-y-4 text-slate-300">
-       <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4">
-  Flooding report confirmed by 3 users
-</div>
-     <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4">
-     New traffic incident reported at Dugbe
-     </div> 
-      <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4">
-      Power outage reported at Bodija
-      </div>
-      <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4">
-       Waste issue updated at Ring Road
-      </div>
+       {recentActivities.map((incident) => (
+  <div
+    key={incident.id}
+    className="rounded-xl border border-green-500/20 bg-green-500/10 p-4"
+  >
+    New {incident.category} incident reported at{" "}
+    {incident.location}
+  </div>
+))}
     </div>
   </div>
 </section>
@@ -366,7 +412,7 @@ if (nearby.length > 0) {
       </p>
 
       <h3 className="mt-2 text-3xl font-bold text-blue-600">
-        4
+        {floodReports}
       </h3>
     </div>
 
@@ -376,7 +422,7 @@ if (nearby.length > 0) {
       </p>
 
       <h3 className="mt-2 text-3xl font-bold text-orange-600">
-        4
+        {trafficReports}
       </h3>
     </div>
 
@@ -386,7 +432,7 @@ if (nearby.length > 0) {
       </p>
 
       <h3 className="mt-2 text-3xl font-bold text-green-600">
-        3
+       {wasteReports}
       </h3>
     </div>
 
@@ -505,6 +551,13 @@ if (nearby.length > 0) {
       >
         Report an Issue
       </a>
+      <a href="/reports">
+  <button
+     className="rounded-xl border border-slate-600 px-6 py-3 font-semibold text-white hover:border-green-500"
+      >      
+    View Reports
+  </button>
+</a>
     </div>
   </div>
 </section>

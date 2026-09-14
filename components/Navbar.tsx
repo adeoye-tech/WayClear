@@ -6,7 +6,7 @@ export default function Navbar() {
   href="/"
   className="flex items-center gap-2 text-xl font-bold text-white"
 >
-  <span>🗺️</span>
+  
   <span>WayClear</span>
 </a>
 
