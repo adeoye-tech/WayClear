@@ -10,6 +10,8 @@ import { collection, onSnapshot } from "firebase/firestore";
 export default function IncidentsPage() {
   const [incidents, setIncidents] = useState<any[]>([]);
 
+  console.log('incidents',incidents)
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "incidents"),

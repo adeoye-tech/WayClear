@@ -153,14 +153,13 @@ if (
         <p className="mt-4 text-slate-300">
           This incident report is no longer active.
         </p>
-        
-
         <Link
-          href="/map"
-          className="mt-8 inline-block rounded-xl bg-cyan-600 px-6 py-3 font-semibold text-white"
-        >
-          Back to Map
-        </Link>
+  href="/incidents"
+  className="inline-flex items-center rounded-xl border border-cyan-500/20 bg-slate-900 px-4 py-2 text-cyan-300 transition hover:border-cyan-400 hover:text-cyan-200"
+>
+  ← Back to View Reports
+</Link>
+
       </div>
     </main>
   );
@@ -171,12 +170,12 @@ if (
       <Navbar />
 
       <section className="mx-auto max-w-4xl px-6 py-12">
-       <Link
-  href="/map"
+      <Link
+  href="/incidents"
   className="inline-flex items-center rounded-xl border border-cyan-500/20 bg-slate-900 px-4 py-2 text-cyan-300 transition hover:border-cyan-400 hover:text-cyan-200"
 >
-          ← Back to Map
-        </Link>
+  ← Back to View Reports
+</Link>
 
         <div className="mt-6 rounded-3xl border border-cyan-500/20 bg-slate-900/80 p-8 shadow-[0_0_30px_rgba(6,182,212,0.08)] backdrop-blur-sm">
           <h1 className="text-4xl font-bold text-white">

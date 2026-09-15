@@ -84,7 +84,8 @@ function getUrgencyStyle(urgency: string) {
 export default function IncidentSidebar({
   incidents,
 }: IncidentSidebarProps) {
-    const [message, setMessage] = useState("");
+   const [message, setMessage] = useState("");
+const [messageId, setMessageId] = useState<string | null>(null);
 const [processing, setProcessing] = useState<string | null>(null);
 
 const [currentPage, setCurrentPage] = useState(1);
@@ -166,13 +167,15 @@ setProcessing(id);
     );
 
   if (alreadyConfirmed) {
+    setMessageId(id);
   setMessage(
     "✓ You already confirmed this report"
   );
 
   setTimeout(() => {
-    setMessage("");
-  }, 3000);
+  setMessage("");
+  setMessageId(null);
+}, 3000);
 
   setProcessing(null);
 
@@ -262,8 +265,10 @@ async function reportStillActive(
     if (diff < 10 * 60 * 1000) {
       
         
-      setMessage(
-  "⏱ Please wait 10 minutes before marking this report active again"
+      setMessageId(id);
+
+setMessage(
+  " Please wait 10 minutes before marking this report active again"
 );
 
 setTimeout(() => {
@@ -298,11 +303,7 @@ return (
   <h2 className="text-3xl font-bold text-white">
     Community Reports
   </h2>
-  {message && (
-  <div className="mt-4 rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-3 text-sm text-cyan-300">
-    {message}
-  </div>
-)}
+  
 
   <p className="mt-6 text-sm text-slate-400">
    Showing {filteredReports.length} active community reports
@@ -352,7 +353,6 @@ return (
   key={incident.id}
   className="block rounded-2xl border border-cyan-500/20 bg-[#0b2147] p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]"
 >
-            
   <h3
 className={`text-lg font-semibold ${
     incident.category === "Flood"
@@ -370,11 +370,18 @@ className={`text-lg font-semibold ${
 >
   {incident.category === "Flood" && " "}
   {incident.category === "Traffic" && " "}
+            
+  
   {incident.category === "Waste" && " "}
   {incident.category === "Electricity" && " "}
   {incident.category === "Road" && " "}
   {incident.category === "Water" && " "}
   {incident.title}
+  {messageId === incident.id && message && (
+  <div className="mt-3 rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-3 text-sm text-cyan-300">
+    {message}
+  </div>
+)}
 </h3>
 
             <span className="mt-2 inline-block rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-300">

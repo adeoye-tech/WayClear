@@ -17,7 +17,7 @@ export default function ReportPage() {
   const [submitted, setSubmitted] = useState(false);
   const [title, setTitle] = useState("");
 const [category, setCategory] = useState("Flood");
-const [urgency, setUrgency] = useState("Medium");
+
 const [stateName, setStateName] = useState("");
 const [town, setTown] = useState("");
 const [area, setArea] = useState(""); 
@@ -125,7 +125,33 @@ const uploadVideo = async (
 
   setUploading(false);
 };
+function calculateUrgency(category: string) {
+  switch (category) {
+    case "Flood":
+      return "High";
 
+    case "Traffic Accident":
+      return "High";
+
+    case "Road Blockage":
+      return "High";
+
+    case "Traffic":
+      return "Medium";
+
+    case "Road":
+      return "Medium";
+
+    case "Water":
+      return "Medium";
+
+    case "Waste":
+      return "Low";
+
+    default:
+      return "Low";
+  }
+}
 
 async function handleSubmit(
   e: React.FormEvent
@@ -220,7 +246,7 @@ console.log("Video URL:", videoUrl);
     title,
     category,
     description,
-    urgency,
+    urgency: calculateUrgency(category),
     videoUrl,
     confidence: "Low",
     confirmations: 1,
@@ -342,19 +368,9 @@ console.log("Video URL:", videoUrl);
 
           </div>
           <div>
-  <label className="mb-2 block font-medium text-slate-200">
-    Urgency Level
-  </label>
+  
 
-  <select
-    value={urgency}
-    onChange={(e) => setUrgency(e.target.value)}
-    className="w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-white outline-none focus:border-cyan-500"
-  >
-    <option value="Low">Low</option>
-    <option value="Medium">Medium</option>
-    <option value="High">High</option>
-  </select>
+ 
 </div>
 
           <div>
