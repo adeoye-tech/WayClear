@@ -217,19 +217,21 @@ async function disputeReport(
   id: string,
   currentDisputes: number
 ) {
-  const alreadyDisputed =
-    localStorage.getItem(
-      `dispute-${id}`
-    );
+  const alreadyDisputed = localStorage.getItem(
+    `dispute-${id}`
+  );
 
   if (alreadyDisputed) {
-   setMessage(
-  "⚠ You already disputed this report"
-);
+    setMessageId(id);
 
-setTimeout(() => {
-  setMessage("");
-}, 3000);
+    setMessage(
+      "⚠ You already disputed this report"
+    );
+
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+
     return;
   }
 
@@ -242,6 +244,16 @@ setTimeout(() => {
   await updateDoc(incidentRef, {
     disputes: currentDisputes + 1,
   });
+
+  setMessageId(id);
+
+  setMessage(
+    "⚠ Report disputed successfully"
+  );
+
+  setTimeout(() => {
+    setMessage("");
+  }, 3000);
 
   localStorage.setItem(
     `dispute-${id}`,
@@ -448,7 +460,7 @@ className={`text-lg font-semibold ${
   incident.confirmations
 );
   }}
-  className="mt-3 w-full rounded-xl bg-cyan-600 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-cyan-500"
+  className="mt-3 w-full rounded-xl cursor-pointer hover:scale-105 bg-cyan-600 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-cyan-500"
 >
   Confirm Report
 </button>
@@ -460,7 +472,7 @@ className={`text-lg font-semibold ${
       incident.id
     );
   }}
-  className="mt-2 w-full rounded-xl border border-yellow-500/40 bg-yellow-500/10 py-2 text-sm font-medium text-yellow-300 transition-all duration-300 hover:bg-yellow-500/20"
+  className="mt-2 w-full rounded-xl border cursor-pointer hover:scale-105 border-yellow-500/40 bg-yellow-500/10 py-2 text-sm font-medium text-yellow-300 transition-all duration-300 hover:bg-yellow-500/20"
 >
   🔄 Still Active
 </button>
@@ -473,7 +485,7 @@ className={`text-lg font-semibold ${
       incident.disputes || 0
     );
   }}
-  className="mt-2 w-full rounded-xl border border-red-500/40 bg-red-500/10 py-2 text-sm font-medium text-red-300 transition-all duration-300 hover:bg-red-500/20"
+  className="mt-2 w-full rounded-xl border cursor-pointer hover:scale-105 border-red-500/40 bg-red-500/10 py-2 text-sm font-medium text-red-300 transition-all duration-300 hover:bg-red-500/20"
 >
   Dispute Report
 </button>
@@ -488,7 +500,7 @@ className={`text-lg font-semibold ${
       )
     }
     disabled={currentPage === 1}
-    className="rounded-xl border border-cyan-500/20 px-4 py-2 text-white disabled:opacity-50"
+    className="rounded-xl border cursor-pointer hover:scale-105 border-cyan-500/20 px-4 py-2 text-white disabled:opacity-50"
   >
     Previous
   </button>
@@ -519,7 +531,7 @@ className={`text-lg font-semibold ${
       )
     }
     disabled={currentPage === totalPages}
-    className="rounded-xl border border-cyan-500/20 px-4 py-2 text-white disabled:opacity-50"
+    className="rounded-xl border cursor-pointer hover:scale-105 border-cyan-500/20 px-4 py-2 text-white disabled:opacity-50"
   >
     Next
   </button>
