@@ -169,7 +169,7 @@ setProcessing(id);
   if (alreadyConfirmed) {
     setMessageId(id);
   setMessage(
-    "✓ You already confirmed this report"
+    "You already confirmed this report"
   );
 
   setTimeout(() => {
@@ -225,7 +225,7 @@ async function disputeReport(
     setMessageId(id);
 
     setMessage(
-      "⚠ You already disputed this report"
+      " You already disputed this report"
     );
 
     setTimeout(() => {
@@ -248,14 +248,14 @@ async function disputeReport(
   setMessageId(id);
 
   setMessage(
-    "⚠ Report disputed successfully"
+    "Report disputed successfully"
   );
 
   setTimeout(() => {
     setMessage("");
   }, 3000);
 
-  localStorage.setItem(
+  localStorage.setItemn(
     `dispute-${id}`,
     "true"
   );
@@ -311,7 +311,8 @@ return (
 
   
   
-  <div className="rounded-3xl border border-cyan-500/20 bg-[#081a3a] p-6 shadow-[0_0_25px_rgba(6,182,212,0.08)]">
+  <div className="mt-10 space-y-6 rounded-3xl border border-cyan-900/40 bg-slate-900/80 p-8 shadow-2xl backdrop-blur-sm"
+>
   <h2 className="text-3xl font-bold text-white">
     Community Reports
   </h2>
@@ -363,134 +364,156 @@ return (
   <Link
   href={`/map/${incident.id}`}
   key={incident.id}
-  className="block rounded-2xl border border-cyan-500/20 bg-[#0b2147] p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]"
+  className="group relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-6 shadow-lg transition-all duration-500 hover:-translate-y-2 hover:border-cyan-400/40 hover:shadow-[0_20px_50px_rgba(6,182,212,0.15)]"
 >
-  <h3
-className={`text-lg font-semibold ${
-    incident.category === "Flood"
-      ? "text-blue-600"
-      : incident.category === "Traffic"
-      ? "text-orange-600"
-      : incident.category === "Waste"
-      ? "text-green-600"
-      : incident.category === "Electricity"
-      ? "text-yellow-600"
-      : incident.category === "Road"
-      ? "text-red-600"
-      : "text-cyan-600"
-  }`}
->
-  {incident.category === "Flood" && " "}
-  {incident.category === "Traffic" && " "}
-            
-  
-  {incident.category === "Waste" && " "}
-  {incident.category === "Electricity" && " "}
-  {incident.category === "Road" && " "}
-  {incident.category === "Water" && " "}
-  {incident.title}
-  {messageId === incident.id && message && (
-  <div className="mt-3 rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-3 text-sm text-cyan-300">
-    {message}
+  {/* Top Glow */}
+  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500" />
+
+  {/* Background Blur */}
+  <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+    <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-cyan-500/10 blur-3xl" />
+    <div className="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl" />
   </div>
-)}
-</h3>
 
-            <span className="mt-2 inline-block rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-300">
-              {incident.category}
-            </span>
+  <div className="relative z-10">
+    <div className="flex items-start justify-between gap-4">
+      <div>
+        <h3
+          className={`text-lg font-bold ${
+            incident.category === "Flood"
+              ? "text-blue-400"
+              : incident.category === "Traffic"
+              ? "text-orange-400"
+              : incident.category === "Waste"
+              ? "text-green-400"
+              : incident.category === "Electricity"
+              ? "text-yellow-400"
+              : incident.category === "Road"
+              ? "text-red-400"
+              : "text-cyan-400"
+          }`}
+        >
+          {incident.title}
+        </h3>
 
-            <p className="mt-2 text-sm text-slate-200">
-              {incident.location}
-            </p>
-            <p className="mt-1 text-xs text-slate-500">
-   {getTimeAgo(incident.createdAt)}
-</p>
-            
+        <p className="mt-2 text-sm text-slate-400">
+           {incident.location}
+        </p>
 
-            <div className="mt-3 flex flex-wrap gap-2">
-  <span
-    className={`rounded-full px-3 py-1 text-xs font-semibold ${getConfidenceStyle(
-      incident.confidence
-    )}`}
-  >
-    {incident.confidence} Confidence
-  </span>
+        <p className="mt-1 text-xs text-slate-500">
+          {getTimeAgo(incident.createdAt)}
+        </p>
+      </div>
 
-  <span
-    className={`rounded-full px-3 py-1 text-xs font-semibold ${getUrgencyStyle(
-      incident.urgency || "Medium"
-    )}`}
-  >
-    {incident.urgency || "Medium"} Urgency
-  </span>
-</div>
+      <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-300">
+        {incident.category}
+      </span>
+    </div>
 
-            
-            <div className="mt-4 flex flex-col gap-2 rounded-xl border border-cyan-500/10 bg-slate-950/40 px-4 py-3">
+    {messageId === incident.id && message && (
+      <div className="mt-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-3 text-sm text-cyan-300">
+        {message}
+      </div>
+    )}
 
-  <span className="font-semibold text-cyan-300">
-     {incident.confirmations} confirmations
-  </span>
+    <div className="mt-5 flex flex-wrap gap-2">
+      <span
+        className={`rounded-full px-3 py-1 text-xs font-semibold ${getConfidenceStyle(
+          incident.confidence
+        )}`}
+      >
+        {incident.confidence} Confidence
+      </span>
 
-  <span className="font-semibold text-yellow-300">
-    🔄 {incident.activeUpdates || 0} active updates
-  </span>
+      <span
+        className={`rounded-full px-3 py-1 text-xs font-semibold ${getUrgencyStyle(
+          incident.urgency || "Medium"
+        )}`}
+      >
+        {incident.urgency || "Medium"} Urgency
+      </span>
+    </div>
 
-  <span className="font-semibold text-red-300">
-     {incident.disputes || 0} disputes
-  </span>
+    <div className="mt-5 grid grid-cols-3 gap-3">
+      <div className="rounded-2xl border border-green-500/10 bg-green-500/5 p-3 text-center">
+        <p className="text-lg font-bold text-green-400">
+          {incident.confirmations}
+        </p>
+        <p className="text-xs text-slate-400">
+          Confirmations
+        </p>
+      </div>
 
-</div>
-           
-            {incident.confidence === "High" && (
-  <div className="mt-2">
-    <span className="rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-300">
-      ✓ Community Verified
-    </span>
+      <div className="rounded-2xl border border-yellow-500/10 bg-yellow-500/5 p-3 text-center">
+        <p className="text-lg font-bold text-yellow-400">
+          {incident.activeUpdates || 0}
+        </p>
+        <p className="text-xs text-slate-400">
+          Updates
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-red-500/10 bg-red-500/5 p-3 text-center">
+        <p className="text-lg font-bold text-red-400">
+          {incident.disputes || 0}
+        </p>
+        <p className="text-xs text-slate-400">
+          Disputes
+        </p>
+      </div>
+    </div>
+
+    {incident.confidence === "High" && (
+      <div className="mt-4">
+        <span className="inline-flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-300">
+           Community Verified
+        </span>
+      </div>
+    )}
+
+    <div className="mt-6 space-y-2">
+      <button
+        disabled={processing === incident.id}
+        onClick={(e) => {
+          e.preventDefault();
+          confirmReport(
+            incident.id,
+            incident.confirmations
+          );
+        }}
+        className="w-full cursor-pointer rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 py-3 text-sm font-semibold text-white transition-all duration-300 hover:scale-[1.02]"
+      >
+        Confirm Report
+      </button>
+
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          reportStillActive(incident.id);
+        }}
+        className="w-full cursor-pointer rounded-2xl border border-yellow-500/30 bg-yellow-500/10 py-3 text-sm font-semibold text-yellow-300 transition-all duration-300 hover:bg-yellow-500/20"
+      >
+         Still Active
+      </button>
+
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          disputeReport(
+            incident.id,
+            incident.disputes || 0
+          );
+        }}
+        className="w-full cursor-pointer rounded-2xl border border-red-500/30 bg-red-500/10 py-3 text-sm font-semibold text-red-300 transition-all duration-300 hover:bg-red-500/20"
+      >
+        Dispute Report
+      </button>
+    </div>
   </div>
-)}
-
-            <button
-  disabled={processing === incident.id}
-  onClick={(e) => {
-    e.preventDefault();
-    confirmReport(
-  incident.id,
-  incident.confirmations
-);
-  }}
-  className="mt-3 w-full rounded-xl cursor-pointer hover:scale-105 bg-cyan-600 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-cyan-500"
->
-  Confirm Report
-</button>
-<button
-  onClick={(e) => {
-    e.preventDefault();
-
-    reportStillActive(
-      incident.id
-    );
-  }}
-  className="mt-2 w-full rounded-xl border cursor-pointer hover:scale-105 border-yellow-500/40 bg-yellow-500/10 py-2 text-sm font-medium text-yellow-300 transition-all duration-300 hover:bg-yellow-500/20"
->
-  🔄 Still Active
-</button>
-<button
-  onClick={(e) => {
-    e.preventDefault();
-
-    disputeReport(
-      incident.id,
-      incident.disputes || 0
-    );
-  }}
-  className="mt-2 w-full rounded-xl border cursor-pointer hover:scale-105 border-red-500/40 bg-red-500/10 py-2 text-sm font-medium text-red-300 transition-all duration-300 hover:bg-red-500/20"
->
-  Dispute Report
-</button>
-          </Link>
+</Link>
         ))}
+
+        
       </div>
     <div className="mt-8 flex items-center justify-center gap-2">
   <button
@@ -535,6 +558,7 @@ className={`text-lg font-semibold ${
   >
     Next
   </button>
+
 </div>
     </div>
 );

@@ -103,7 +103,7 @@ const selectedIncident = incidents.find(
   (incident) => incident.id === incidentId
 );
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-slate-600">
       <Navbar />
 
       <section className="mx-auto max-w-7xl px-6 py-10">
@@ -131,7 +131,7 @@ const selectedIncident = incidents.find(
   See flooding, traffic, power outages, waste issues,
   and other local conditions before travelling.
 </p>
-<div className="mt-8 rounded-3xl bg-linear-to-r from-cyan-600 via-blue-700 to-slate-900 p-8 text-white shadow-2xl border border-cyan-500/20">
+<div className="mt-8 rounded-3xl bg-linear-to-r from-slate-800 p-8 text-white shadow-2xl">
   <p  className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">
     Live Community Intelligence
   </p>

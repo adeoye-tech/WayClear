@@ -113,7 +113,7 @@ export default function MapComponent({
   center={[7.3775, 3.947]}
   zoom={12}
   preferCanvas={true}
-  className="h-[700px] w-full rounded-2xl shadow-sm"
+  className="h-175 w-full rounded-2xl shadow-sm"
 >
     <FixMapSize />
       <FitBounds incidents={incidents} />
@@ -167,9 +167,9 @@ export default function MapComponent({
 
     <Link
   href={`/map/${incident.id}`}
-  className="inline-flex items-center justify-center rounded-xl bg-linear-to-r from-cyan-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-cyan-500/30"
+  className="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-cyan-500/30"
 >
-  View Details →
+  View Details 
 </Link>
   </div>
 </Popup>

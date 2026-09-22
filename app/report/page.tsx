@@ -278,7 +278,7 @@ console.log("Video URL:", videoUrl);
  
 
     return (
-    <main className="min-h-screen bg-linear-to-b from-slate-900 via-slate-950 to-blue-950">
+    <main className="min-h-screen bg-slate-600">
       <Navbar />
 
       <section className="mx-auto max-w-3xl px-6 py-12">
@@ -436,18 +436,18 @@ console.log("Video URL:", videoUrl);
     type="file"
     accept="video/*"
     onChange={uploadVideo}
-    className="w-full rounded-xl border border-cyan-500/30 bg-slate-900 p-3 text-white file:mr-4 file:rounded-lg file:border-0 file:bg-cyan-600 file:px-4 file:py-2 file:text-white hover:file:bg-cyan-500"
+    className="w-full rounded-xl border border-cyan-500/30 bg-slate-900 p-3 text-white file:mr-4 file:rounded-lg file:border-0 file:bg-slate-600 file:px-4 file:py-2 file:text-white hover:file:bg-slate-800"
   />
 
   {uploading && (
-    <p className="mt-2 text-cyan-300">
+    <p className="mt-2">
       Uploading video...
     </p>
   )}
 
   {videoUrl && (
     <p className="mt-2 text-green-400">
-      ✓ Video uploaded successfully
+       Video uploaded successfully
     </p>
   )}
 </div>
@@ -458,13 +458,13 @@ console.log("Video URL:", videoUrl);
          <button
   type="submit"
   disabled={loading}
-  className="cursor-pointer rounded-xl bg-cyan-600 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:scale-105 hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-60"
+  className="cursor-pointer rounded-xl border px-6 py-3 font-semibold text-white hover:shadow-sm transition-all duration-300 hover:scale-105 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
 >
   {loading ? "Submitting..." : "Submit Report"}
 </button>
          {submitted && (
   <div className="mt-4 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-green-300">
-    ✅ Report submitted successfully.
+  Report submitted successfully.
   </div>
 )}
             

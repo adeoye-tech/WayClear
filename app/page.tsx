@@ -122,19 +122,19 @@ const verifiedReports = incidents.filter(
 ).length;
 
   return (
-    <main  className="min-h-screen bg-linear-to-r from-slate-950 via-slate-900 to-blue-950">
+    <main  className="min-h-screen bg-linear-to-r from-slate-200 via-slate-400 to-blue-300">
             <Navbar />
             {nearbyAlerts.length > 0 && (
   <div className="mx-auto max-w-6xl px-6 pt-6">
-    <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+    <div className="rounded-xl border border-yellow-500 bg-yellow-500/10 p-4">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-  <p className="font-semibold text-yellow-300">
+  <p className="font-semibold text-yellow-600">
      {nearbyAlerts[0]?.title} reported near {nearbyAlerts[0]?.location}
   </p>
 
  <a
   href={`/map?incident=${nearbyAlerts[0]?.id}`}
-  className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-yellow-400"
+  className="rounded-lg bg-yellow-600 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-yellow-400"
 >
   View on Map
 </a>
@@ -150,11 +150,11 @@ const verifiedReports = incidents.filter(
     </span>
     
 
-    <h1 className="mt-6  text-white text-6xl font-extrabold tracking-tight ">
+    <h1 className="mt-6  text-white text-2xl md:text-6xl font-extrabold tracking-tight ">
       Know Before You Go
     </h1>
 
-    <p className="mx-auto max-w-3xl text-xl text-slate-300">
+    <p className="mx-auto max-w-3xl text-sm md:text-xl text-slate-300">
     
       See real-time reports about flooding,
       traffic, power outages, waste issues,
@@ -181,13 +181,13 @@ const verifiedReports = incidents.filter(
 </section>
 
 
-<section className="mx-auto max-w-6xl px-6 pb-20">
-  <div className="grid gap-6 md:grid-cols-3">
+<section className="mx-auto md:max-w-6xl px-6">
+  <div className="grid gap-6 px-6 md:grid-cols-3">
     <div className="rounded-3xl border border-cyan-900/30 bg-slate-900/50 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
       <h3 className="text-4xl font-bold text-cyan-300">
        {totalReports}
       </h3>
-      <p className="mt-2 text-slate-600">
+      <p className="mt-2 text-white">
         Active Reports
       </p>
     </div>
@@ -196,7 +196,7 @@ const verifiedReports = incidents.filter(
       <h3 className="text-4xl font-bold text-cyan-300">
         {totalVerifications}
       </h3>
-      <p className="mt-2 text-slate-600">
+      <p className="mt-2 text-white">
         Community Verifications
       </p>
     </div>
@@ -205,7 +205,7 @@ const verifiedReports = incidents.filter(
       <h3 className="text-4xl font-bold text-cyan-300">
        {totalCommunities}
       </h3>
-      <p className="mt-2 text-slate-600">
+      <p className="mt-2 text-white">
         Communities Covered
       </p>
     </div>
@@ -214,14 +214,14 @@ const verifiedReports = incidents.filter(
 
       
 
-      <section className="bg-slate-950 py-24">
+      <section className="px-6 mt-10">
   <div className="mx-auto max-w-7xl px-6">
     <div className="mx-auto max-w-3xl text-center">
       <h2 className="text-4xl font-bold text-white">
        Why Communities Trust WayClear
       </h2>
 
-      <p className="mt-4 text-lg text-slate-300">
+      <p className="mt-4 text-lg text-gray-600">
         People often know where they are going but have no idea what the
         situation is like when they get there.
       </p>
@@ -233,7 +233,7 @@ const verifiedReports = incidents.filter(
           Unexpected Flooding
         </h3>
 
-        <p className="mt-3 text-slate-600">
+        <p className="mt-3 text-white">
           Roads that were accessible yesterday may be flooded today, causing
           delays, wasted transport costs and frustration.
         </p>
@@ -244,7 +244,7 @@ const verifiedReports = incidents.filter(
           Community Issues
         </h3>
 
-        <p className="mt-3 text-slate-600">
+        <p className="mt-3 text-white">
           Waste buildup, water shortages and electricity problems often go
           unnoticed until people arrive at the location.
         </p>
@@ -255,14 +255,14 @@ const verifiedReports = incidents.filter(
           Lack of Local Information
         </h3>
 
-        <p className="mt-3 text-slate-600">
+        <p className="mt-3 text-white">
           Existing maps show where places are, but they rarely show what is
           currently happening there.
         </p>
       </div>
     </div>
 
-    <div className="mt-16 rounded-3xl bg-linear-to-r from-cyan-600 via-blue-700 to-slate-900 p-10 text-white shadow-2xl">
+    <div className="my-16 rounded-3xl bg-linear-to-r from-slate-800 p-10 text-white shadow-2xl">
       <h3 className="text-3xl font-bold">
         Our Solution
       </h3>
@@ -278,21 +278,21 @@ const verifiedReports = incidents.filter(
 
     
 
-<section className="bg-slate-950 py-24">
+<section className="px-6">
   <div className="mx-auto max-w-7xl px-6">
     <div className="mx-auto max-w-3xl text-center">
       <h2 className="text-4xl font-bold text-white">
         How Community Intelligence Works
       </h2>
 
-      <p className="mt-4 text-lg text-slate-300">
+      <p className="mt-4 text-lg text-gray-600">
         A simple community-driven process that helps people stay informed
         about real-world conditions around them.
       </p>
     </div>
 
     <div className="mt-16 grid gap-8 md:grid-cols-3">
-      <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
+      <div className="rounded-3xl border border-slate-800 bg-slate-300 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
         <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-xl font-bold text-green-700">
           1
         </div>
@@ -307,7 +307,7 @@ const verifiedReports = incidents.filter(
         </p>
       </div>
 
-      <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
+      <div className="rounded-3xl border border-slate-800 bg-slate-300 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
         <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-xl font-bold text-green-700">
           2
         </div>
@@ -322,7 +322,7 @@ const verifiedReports = incidents.filter(
         </p>
       </div>
 
-      <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
+      <div className="rounded-3xl border border-slate-800 bg-slate-300 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500">
         <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-xl font-bold text-green-700">
           3
         </div>
@@ -340,11 +340,11 @@ const verifiedReports = incidents.filter(
   </div>
 </section>
 
-<section className="mx-auto max-w-6xl px-6 pb-24">
+<section className="mx-auto max-w-6xl px-6 my-15 ">
   <h2 className="mb-8 text-center text-3xl font-bold text-white">
      Trending Incidents
   </h2>
- <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+ <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 px-6">
 
   
   {trendingIncidents.length > 0 ? (
@@ -352,7 +352,7 @@ const verifiedReports = incidents.filter(
  <Link
   href={`/map/${incident.id}`}
   key={incident.id}
-  className="block min-h-[220px] rounded-3xl border border-slate-800 bg-slate-900/60 p-6 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:shadow-xl"
+  className="block min-h-55 rounded-3xl border border-slate-800 bg-slate-900/60 p-6 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:shadow-xl"
 >
       <h3 className="text-xl font-semibold text-white">
         {incident.title}
@@ -380,12 +380,12 @@ const verifiedReports = incidents.filter(
 </div>
  
 </section>
-<section className="mx-auto max-w-6xl px-6 pb-24">
+<section className="mx-auto max-w-6xl px-6 my-15">
  <h2 className="mb-8 text-center text-3xl font-bold text-white">
     Recent Activity
   </h2>
 
-  <div  className="rounded-3xl border border-cyan-900/30 bg-slate-900/40 p-8 backdrop-blur-sm">
+  <div  className=" bg-slate-900 p-8 backdrop-blur-sm">
    <div className="space-y-4 text-slate-300">
        {recentActivities.map((incident) => (
   <div
@@ -400,13 +400,13 @@ const verifiedReports = incidents.filter(
   </div>
 </section>
 
-<section className="mx-auto max-w-6xl px-6 pb-24">
+<section className="mx-auto max-w-6xl px-6 my-15">
   <h2 className="mb-8 text-center text-3xl font-bold text-white">
     Community Statistics
   </h2>
 
   <div className="grid gap-6 md:grid-cols-4">
-    <div className="rounded-2xl border border-cyan-900/40 bg-slate-900 p-6 shadow-lg">
+    <div className="max-sm:flex max-sm:flex-col max-sm:justify-center max-sm:items-center  bg-slate-900 p-6 shadow-lg">
       <p className="text-sm text-slate-400">
         Flood Reports
       </p>
@@ -416,7 +416,8 @@ const verifiedReports = incidents.filter(
       </h3>
     </div>
 
-    <div className="rounded-2xl border border-cyan-900/40 bg-slate-900 p-6 shadow-lg">
+    <div className="max-sm:flex max-sm:flex-col max-sm:justify-center max-sm:items-center  bg-slate-900 p-6 shadow-lg">
+
       <p className="text-sm text-slate-400">
         Traffic Reports
       </p>
@@ -426,7 +427,8 @@ const verifiedReports = incidents.filter(
       </h3>
     </div>
 
-    <div className="rounded-2xl border border-cyan-900/40 bg-slate-900 p-6 shadow-lg">
+        <div className="max-sm:flex max-sm:flex-col max-sm:justify-center max-sm:items-center  bg-slate-900 p-6 shadow-lg">
+
       <p className="text-sm text-slate-400">
         Waste Reports
       </p>
@@ -436,7 +438,8 @@ const verifiedReports = incidents.filter(
       </h3>
     </div>
 
-    <div className="rounded-2xl border border-cyan-900/40 bg-slate-900 p-6 shadow-lg">
+        <div className="max-sm:flex max-sm:flex-col max-sm:justify-center max-sm:items-center  bg-slate-900 p-6 shadow-lg">
+
       <p className="text-sm text-slate-400">
         Verified Reports
       </p>
@@ -448,7 +451,7 @@ const verifiedReports = incidents.filter(
   </div>
 </section>
 
-<section className="bg-slate-950 py-24">
+<section className="bg-black my-15 py-10">
   <div className="mx-auto max-w-7xl px-6">
     <div className="mx-auto max-w-3xl text-center">
       <h2 className="text-4xl font-bold text-white">
@@ -462,7 +465,7 @@ const verifiedReports = incidents.filter(
     </div>
 
     <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <div className="rounded-2xl border border-red-500/30 bg-slate-900 p-6">
+      <div className=" bg-slate-900 p-6">
         <h3 className="text-xl font-semibold text-red-700">
           Flooding
         </h3>
@@ -473,7 +476,7 @@ const verifiedReports = incidents.filter(
         </p>
       </div>
 
-      <div className="rounded-2xl border border-red-500/30 bg-slate-900 p-6">
+      <div className=" bg-slate-900 p-6">
         <h3 className="text-xl font-semibold text-orange-700">
           Bad Roads
         </h3>
@@ -483,7 +486,7 @@ const verifiedReports = incidents.filter(
         </p>
       </div>
 
-      <div className="rounded-2xl border border-red-500/30 bg-slate-900 p-6">
+      <div className=" bg-slate-900 p-6">
         <h3 className="text-xl font-semibold text-yellow-700">
           Electricity Issues
         </h3>
@@ -493,7 +496,7 @@ const verifiedReports = incidents.filter(
         </p>
       </div>
 
-      <div className="rounded-2xl border border-red-500/30 bg-slate-900 p-6">
+      <div className=" bg-slate-900 p-6">
         <h3 className="text-xl font-semibold text-blue-700">
           Water Shortages
         </h3>
@@ -503,7 +506,7 @@ const verifiedReports = incidents.filter(
         </p>
       </div>
 
-      <div className="rounded-2xl border border-red-500/30 bg-slate-900 p-6">
+      <div className=" bg-slate-900 p-6">
         <h3 className="text-xl font-semibold text-amber-700">
           Waste Issues
         </h3>
@@ -513,7 +516,7 @@ const verifiedReports = incidents.filter(
         </p>
       </div>
 
-      <div className="rounded-2xl border border-red-500/30 bg-slate-900 p-6">
+      <div className=" bg-slate-900 p-6">
         <h3 className="text-xl font-semibold text-purple-700">
           Traffic
         </h3>
@@ -526,13 +529,13 @@ const verifiedReports = incidents.filter(
   </div>
 </section>
 
-<section className="border-t border-cyan-900/40 bg-linearto-r from-slate-950 via-slate-900 to-cyan-950 py-24">
+<section className=" px-6 my-15">
   <div className="mx-auto max-w-4xl px-6 text-center">
-    <h2 className="text-5xl font-bold text-white">
+    <h2 className="text-5xl font-bold text-slate-900">
       Help Communities Stay Informed
     </h2>
 
-    <p className="mt-6 text-lg text-slate-300">
+    <p className="mt-6 text-lg text-gray-600">
       Join a growing network of people sharing real-world information that
       helps others make smarter decisions before they travel.
     </p>

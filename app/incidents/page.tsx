@@ -35,7 +35,7 @@ export default function IncidentsPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-slate-600">
       <Navbar />
 
       <section className="mx-auto max-w-7xl px-6 py-10">
