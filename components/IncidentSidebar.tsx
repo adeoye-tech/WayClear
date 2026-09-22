@@ -364,15 +364,15 @@ return (
   <Link
   href={`/map/${incident.id}`}
   key={incident.id}
-  className="group relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-6 shadow-lg transition-all duration-500 hover:-translate-y-2 hover:border-cyan-400/40 hover:shadow-[0_20px_50px_rgba(6,182,212,0.15)]"
+  className="group relative overflow-hidden rounded-3xl border border-slate-700/50 bg-[#081225] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-[0_15px_40px_rgba(0,0,0,0.45)]"
 >
   {/* Top Glow */}
-  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500" />
+  <div className="absolute inset-x-0 top-0 h-[3px] bg-cyan-500/80" />
 
   {/* Background Blur */}
   <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-    <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-cyan-500/10 blur-3xl" />
-    <div className="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl" />
+    <div className="absolute -right-20 -top-20 h-32 w-32 rounded-full bg-cyan-500/5 blur-3xl" />
+<div className="absolute -bottom-20 -left-20 h-32 w-32 rounded-full bg-blue-500/5 blur-3xl" />
   </div>
 
   <div className="relative z-10">

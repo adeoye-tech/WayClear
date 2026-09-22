@@ -154,7 +154,7 @@ const verifiedReports = incidents.filter(
       Know Before You Go
     </h1>
 
-    <p className="mx-auto max-w-3xl text-sm md:text-xl text-slate-300">
+    <p className="mx-auto max-w-3xl text-sm md:text-xl text-slate-600">
     
       See real-time reports about flooding,
       traffic, power outages, waste issues,
